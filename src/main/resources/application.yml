@@ -1,0 +1,11 @@
+spring.jpa:
+  show-sql: true
+  hibernate.ddl=auto: create-drop
+
+spring.datasource:
+  platform: h2
+  url: jdbc:h2:mem:ecommerce-app
+
+spring.h2.console.enabled: true
+
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
