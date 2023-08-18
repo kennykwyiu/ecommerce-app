@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 @MappedSuperclass
@@ -20,4 +21,16 @@ public abstract class AbstractPersistableEntity<ID> implements Serializable {
     @Version
     protected Long version;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractPersistableEntity<?> that = (AbstractPersistableEntity<?>) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

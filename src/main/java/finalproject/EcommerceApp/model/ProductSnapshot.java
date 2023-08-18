@@ -30,6 +30,12 @@ public class ProductSnapshot extends AbstractAuditableEntity<ProductSnapshot, Lo
     @Column(name = "thumbnail")
     private String thumbnail;
 
+    @Column(name = "country_of_origin")
+    private String countryOfOrigin;
+
+    @Column(name = "color")
+    private String color;
+
     @ManyToOne
     @JoinColumn(name = "product_category_id")
     private ProductCategory productCategory;

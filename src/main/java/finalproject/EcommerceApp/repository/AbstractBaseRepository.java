@@ -9,4 +9,6 @@ import java.io.Serializable;
 @NoRepositoryBean
 public interface AbstractBaseRepository<T extends AbstractAuditableEntity<T,ID>, ID extends Serializable >
         extends JpaRepository<T, ID> {
+
+
 }

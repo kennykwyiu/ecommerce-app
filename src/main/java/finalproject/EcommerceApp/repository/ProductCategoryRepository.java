@@ -1,6 +1,5 @@
 package finalproject.EcommerceApp.repository;
 
-import finalproject.EcommerceApp.model.Product;
 import finalproject.EcommerceApp.model.ProductCategory;
 import org.springframework.stereotype.Repository;
 

@@ -1,19 +1,23 @@
 package finalproject.EcommerceApp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @ToString
-@RequiredArgsConstructor
-@Table(name = "product")
+@Table(name = "product_images")
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductImages extends AbstractAuditableEntity<ProductImages, Long> {
     @Column(name = "url")
     private String url;
+
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 }

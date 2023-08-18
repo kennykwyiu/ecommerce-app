@@ -1,7 +1,7 @@
 package finalproject.EcommerceApp.factory;
 
 import finalproject.EcommerceApp.dto_request.SignUpRequestDTO;
-import finalproject.EcommerceApp.dto_respond.SystemUserRespondDTO;
+import finalproject.EcommerceApp.dto_response.SystemUserRespondDTO;
 import finalproject.EcommerceApp.model.SystemUser;
 import org.springframework.stereotype.Component;
 

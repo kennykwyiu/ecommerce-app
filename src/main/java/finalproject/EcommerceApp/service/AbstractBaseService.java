@@ -8,13 +8,16 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public abstract class AbstractBaseService<T extends AbstractAuditableEntity<T, ID>, ID
         extends Serializable> {
     @Autowired
-    private AbstractBaseRepository<T, ID> repository;
+    protected AbstractBaseRepository<T, ID> repository;
+
+    public AbstractBaseService(AbstractBaseRepository<T, ID> repository) {
+        this.repository = repository;
+    }
 
     public T save(T entity) {
         return repository.save(entity);
@@ -32,8 +35,11 @@ public abstract class AbstractBaseService<T extends AbstractAuditableEntity<T, I
 //        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(""));
 //    }
 
-    public Optional<T> findById(ID id) throws ResourceNotFoundException {
-        return repository.findById(id);
+    public T findById(ID id) throws ResourceNotFoundException {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("Entity of %s not found by id %s", getClass().getSimpleName(), id)
+                ));
     }
 
     public void delete(T entity) {

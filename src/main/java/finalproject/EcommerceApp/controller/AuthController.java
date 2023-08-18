@@ -1,7 +1,7 @@
 package finalproject.EcommerceApp.controller;
-import com.google.firebase.auth.FirebaseAuthException;
 import finalproject.EcommerceApp.dto_request.SignUpRequestDTO;
-import finalproject.EcommerceApp.dto_respond.SystemUserRespondDTO;
+import finalproject.EcommerceApp.dto_response.SystemUserRespondDTO;
+import finalproject.EcommerceApp.exception.ExternalServiceException;
 import finalproject.EcommerceApp.factory.SystemUserFactory;
 import finalproject.EcommerceApp.firebase.FirebaseAuthService;
 import finalproject.EcommerceApp.model.Permission;
@@ -31,13 +31,13 @@ public class AuthController {
     private FirebaseAuthService firebaseAuthService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SystemUserRespondDTO> signUp(@Valid @RequestBody SignUpRequestDTO requestDTO) throws FirebaseAuthException {
+    public ResponseEntity<SystemUserRespondDTO> signUp(@Valid @RequestBody SignUpRequestDTO requestDTO) throws ExternalServiceException {
         SystemUser systemUser = systemUserService.signUp(requestDTO);
         SystemUserRespondDTO systemUserRespondDTO = systemUserFactory.toDTO(systemUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(systemUserRespondDTO);
     }
     @PostMapping("/grant")
-    public ResponseEntity<Void> grant(Principal principal) throws FirebaseAuthException {
+    public ResponseEntity<Void> grant(Principal principal) throws ExternalServiceException {
         String principalName = principal.getName();
         List<Permission> requestedPermissions = List.of(Permission.REGULAR_USER, Permission.ADMIN);
         firebaseAuthService.setUserClaims(principalName, requestedPermissions);

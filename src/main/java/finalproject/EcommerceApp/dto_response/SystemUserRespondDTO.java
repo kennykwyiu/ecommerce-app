@@ -1,8 +1,5 @@
-package finalproject.EcommerceApp.dto_respond;
+package finalproject.EcommerceApp.dto_response;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
