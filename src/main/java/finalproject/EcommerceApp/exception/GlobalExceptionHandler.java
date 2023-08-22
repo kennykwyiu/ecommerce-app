@@ -24,6 +24,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponseDTO<Void>> handleExternalServiceException(ExternalServiceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseDTO.fail(ex.getMessage()));
     }
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResponseDTO<Void>> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponseDTO.fail(ex.getMessage()));
+    }
+    @ExceptionHandler(InsufficientInventoryException.class)
+    public ResponseEntity<ApiResponseDTO<Void>> handleInsufficientInventoryException(InsufficientInventoryException ex) {
+        return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(ApiResponseDTO.fail(ex.getMessage()));
+    }
 
 
 }

@@ -25,4 +25,8 @@ public class ProductCategoryService extends AbstractBaseService<ProductCategory,
         this.repository = repository;
     }
 
+    public ProductCategory getReferenceById(Long productCategoryId) {
+        return repository.getReferenceById(productCategoryId);
+
+    }
 }

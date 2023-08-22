@@ -1,5 +1,6 @@
 package finalproject.EcommerceApp.controller.AdminProduct;
 
+import finalproject.EcommerceApp.dto_request.ProductImagesRequestDTO;
 import finalproject.EcommerceApp.dto_request.ProductRequestDTO;
 import finalproject.EcommerceApp.dto_response.EmptyResponseDTO;
 import finalproject.EcommerceApp.dto_response.ProductResponseDTO;

@@ -1,4 +1,4 @@
-package finalproject.EcommerceApp.controller;
+package finalproject.EcommerceApp.dto_request;
 
 import finalproject.EcommerceApp.model.Permission;
 import jakarta.validation.constraints.NotBlank;

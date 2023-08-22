@@ -13,16 +13,24 @@ public class ProductImageFactory {
     @Autowired
     private ProductImagesRepository productImagesRepository;
 
-    public void addImagesToProductFromImagesList(Product product, List<String> productImages) {
-        for (String image : productImages) {
-            ProductImages productImages1 = ProductImages.builder()
-                    .url(image)
-                    .product(product)
-                    .build();
-            productImagesRepository.save(productImages1);
-        }
+    public void addImagesToProductFromImagesList(Product product, List<String> urlList) {
+        urlList.forEach(url -> productImagesRepository.save(
+                ProductImages.builder()
+                        .url(url)
+                        .product(product)
+                        .build()
+        ));
+
+
+//        for (String url : urlList) {
+//            ProductImages productImages = ProductImages.builder()
+//                    .url(url)
+//                    .product(product)
+//                    .build();
+//            productImagesRepository.save(productImages);
+//    }
     }
-
-
-
 }
+
+
+

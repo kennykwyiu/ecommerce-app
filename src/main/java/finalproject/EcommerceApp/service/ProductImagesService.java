@@ -25,7 +25,7 @@ public class ProductImagesService extends AbstractBaseService<ProductImages, Lon
     }
 
     public List<String> getAllByProduct(Product product) {
-        return repository.findAllByProductId(product);
+        return repository.findAllByProduct(product);
     }
 
     public ResponseEntity<Void> save(String url, Product product) {

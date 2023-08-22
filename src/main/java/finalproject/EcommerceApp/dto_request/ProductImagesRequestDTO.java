@@ -1,4 +1,4 @@
-package finalproject.EcommerceApp.controller.AdminProduct;
+package finalproject.EcommerceApp.dto_request;
 
 import finalproject.EcommerceApp.model.Product;
 import jakarta.persistence.JoinColumn;

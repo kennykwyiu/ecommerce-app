@@ -9,3 +9,6 @@ spring.datasource:
 spring.h2.console.enabled: true
 
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+
+logging.level.org.springframework.web: DEBUG
+#logging.level.org.hibernate: DEBUG

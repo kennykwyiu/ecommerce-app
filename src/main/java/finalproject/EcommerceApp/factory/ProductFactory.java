@@ -39,8 +39,8 @@ public class ProductFactory {
 
 
     public Product toEntity(ProductRequestDTO requestDTO) throws ResourceNotFoundException {
-        ProductCategory productCategory = productCategoryService.findById(requestDTO.getProductCategoryId());
-
+//        ProductCategory productCategory = productCategoryService.findById(requestDTO.getProductCategoryId());
+        ProductCategory productCategory = productCategoryService.getReferenceById(requestDTO.getProductCategoryId());
         return Product.builder()
                 .title(requestDTO.getTitle())
                 .description(requestDTO.getDescription())
