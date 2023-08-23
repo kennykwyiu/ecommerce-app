@@ -16,7 +16,8 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAuditableEntity<T, ID> extends AbstractPersistableEntity<ID> {

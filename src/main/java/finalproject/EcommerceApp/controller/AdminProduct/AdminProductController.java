@@ -65,6 +65,7 @@ public class AdminProductController {
                                                                 @Valid @RequestBody ProductRequestDTO requestDTO) throws ResourceNotFoundException {
         Product updatedProduct = productService.updateProductById(productId, requestDTO);
         ProductResponseDTO updatedResponseDTO = productFactory.toDto(updatedProduct);
+        productService.save(updatedProduct);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedResponseDTO);
     }
 

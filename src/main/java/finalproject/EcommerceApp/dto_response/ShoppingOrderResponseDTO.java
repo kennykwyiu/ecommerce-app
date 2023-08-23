@@ -1,6 +1,5 @@
 package finalproject.EcommerceApp.dto_response;
 
-import finalproject.EcommerceApp.model.ShoppingOrder;
 import finalproject.EcommerceApp.model.ShoppingOrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +19,6 @@ public class ShoppingOrderResponseDTO {
     private BigDecimal total;
     private LocalDateTime createdAt;
     private ShoppingOrderStatus orderStatus;
+    private SystemUserAddressResponseDTO systemUserAddressResponseDTO;
 
 }

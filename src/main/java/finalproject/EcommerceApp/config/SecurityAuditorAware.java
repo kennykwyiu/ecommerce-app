@@ -4,6 +4,9 @@ import finalproject.EcommerceApp.exception.ResourceNotFoundException;
 import finalproject.EcommerceApp.model.SystemUser;
 import finalproject.EcommerceApp.repository.SystemUserRepository;
 import finalproject.EcommerceApp.service.SystemUserService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,9 @@ public class SecurityAuditorAware implements AuditorAware<SystemUser> {
     @Autowired
     private SystemUserRepository systemUserRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @Override
     public Optional<SystemUser> getCurrentAuditor() {
 
@@ -28,8 +34,9 @@ public class SecurityAuditorAware implements AuditorAware<SystemUser> {
         }
         String externalUserId = authentication.getName();
 
-        return systemUserRepository.findByExternalUserId(externalUserId);
-
-
+        entityManager.setFlushMode(FlushModeType.COMMIT);
+        Optional<SystemUser>  opt = systemUserRepository.findByExternalUserId(externalUserId);
+        entityManager.setFlushMode(FlushModeType.AUTO);
+        return opt;
     }
 }

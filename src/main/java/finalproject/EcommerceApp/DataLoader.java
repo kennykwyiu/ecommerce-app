@@ -1,14 +1,8 @@
 package finalproject.EcommerceApp;
 
-import finalproject.EcommerceApp.model.Product;
-import finalproject.EcommerceApp.model.ProductCategory;
-import finalproject.EcommerceApp.model.ProductImages;
-import finalproject.EcommerceApp.model.SystemUser;
+import finalproject.EcommerceApp.model.*;
 import finalproject.EcommerceApp.repository.ProductRepository;
-import finalproject.EcommerceApp.service.ProductCategoryService;
-import finalproject.EcommerceApp.service.ProductImagesService;
-import finalproject.EcommerceApp.service.ProductService;
-import finalproject.EcommerceApp.service.SystemUserService;
+import finalproject.EcommerceApp.service.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +26,9 @@ public class DataLoader {
 
     @Autowired
     private ProductImagesService productImagesService;
+
+    @Autowired
+    private SystemUserAddressService systemUserAddressService;
 
     @PostConstruct
     private void init() {
@@ -135,7 +132,7 @@ public class DataLoader {
         Product productFire = Product.builder()
                 .title("紫晶塊\nAmethyst Cluster")
                 .description("""
-                        
+                                                
                         有特別的內含物，看似虎紋、姆指紋或羽毛。又或含有針鐵礦內含物
                         Banded structures known as "tiger stripes", sometimes rutile is there.""")
                 .price(new BigDecimal("150"))
@@ -153,7 +150,6 @@ public class DataLoader {
                 .build();
         productRepository.save(productFire);
         productImagesService.save("Http1", productFire);
-
 
 
         Product productWood = Product.builder()
@@ -180,6 +176,19 @@ public class DataLoader {
         productRepository.save(productWood);
         productImagesService.save("Http1", productWood);
 
+        SystemUserAddress systemUserAddress = SystemUserAddress.builder()
+                .room("room C")
+                .flat("17/F")
+                .block("Block Z")
+                .building("Shit Building")
+                .town("KLN Bay")
+                .district("KLN")
+                .county("HK")
+                .phoneNumber("98765432")
+                .receiver("Hello World")
+                .systemUser(systemUser2)
+                .build();
+        systemUserAddressService.save(systemUserAddress);
 
     }
 }

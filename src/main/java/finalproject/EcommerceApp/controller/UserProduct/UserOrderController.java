@@ -5,12 +5,12 @@ import finalproject.EcommerceApp.dto_response.ShoppingOrderResponseDTO;
 import finalproject.EcommerceApp.exception.InsufficientInventoryException;
 import finalproject.EcommerceApp.exception.ResourceNotFoundException;
 import finalproject.EcommerceApp.factory.ShoppingOrderFactory;
+import finalproject.EcommerceApp.factory.SystemUserAddressFactory;
+import finalproject.EcommerceApp.dto_response.SystemUserAddressResponseDTO;
 import finalproject.EcommerceApp.model.ShoppingOrder;
 import finalproject.EcommerceApp.model.SystemUser;
-import finalproject.EcommerceApp.service.CheckOutService;
-import finalproject.EcommerceApp.service.OrderProcessingService;
-import finalproject.EcommerceApp.service.ShoppingCartService;
-import finalproject.EcommerceApp.service.SystemUserService;
+import finalproject.EcommerceApp.model.SystemUserAddress;
+import finalproject.EcommerceApp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +37,11 @@ public class UserOrderController {
 
     @Autowired
     private CheckOutService checkOutService;
+    @Autowired
+    private SystemUserAddressService systemUserAddressService;
+
+    @Autowired
+    private SystemUserAddressFactory systemUserAddressFactory;
 
     @GetMapping
     public List<ShoppingOrderResponseDTO> getHistoricalOrders(Principal principal) throws ResourceNotFoundException {
@@ -63,8 +68,14 @@ public class UserOrderController {
         }
 
         ShoppingOrder shoppingOrder = checkOutService.checkOut(shoppingCartRequestDTO, systemUser);
+
+        SystemUserAddress systemUserAddress = systemUserAddressService.findBySystemUser(systemUser);
+
+        SystemUserAddressResponseDTO systemUserAddressResponseDTO
+                = systemUserAddressFactory.toResponseDTO(systemUserAddress);
+
         ShoppingOrderResponseDTO shoppingOrderResponseDTO =
-                shoppingOrderFactory.createDTOFromShoppingOrder(shoppingOrder);
+                shoppingOrderFactory.createDTOFromShoppingOrder(shoppingOrder, systemUserAddressResponseDTO);
         shoppingCartService.clearCart(systemUser.getId());
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingOrderResponseDTO);

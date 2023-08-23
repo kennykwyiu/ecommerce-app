@@ -1,5 +1,7 @@
-package finalproject.EcommerceApp.model;
+package finalproject.EcommerceApp.dto_response;
 
+import finalproject.EcommerceApp.model.ShoppingOrder;
+import finalproject.EcommerceApp.model.ShoppingOrderItem;
 import lombok.Builder;
 import lombok.Data;
 

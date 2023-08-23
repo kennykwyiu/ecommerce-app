@@ -31,7 +31,7 @@ public class AdminProductCategoryController {
 
 
     @GetMapping("/{productCategoryId}") // OK
-    public List<Product> findProductByProductId(@PathVariable Long productCategoryId) {
+    public List<Product> findProductByProductCategoryId(@PathVariable Long productCategoryId) {
         return productService.findByProductCategoryId(productCategoryId);
     }
 

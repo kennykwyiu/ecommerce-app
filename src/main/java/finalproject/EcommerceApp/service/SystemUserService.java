@@ -45,4 +45,8 @@ public class SystemUserService extends AbstractBaseService<SystemUser, Long> {
                         String.format("User not found by external User Id [%s]", externalUserId)
                 ));
     }
+
+    public SystemUser getReferenceById(Long systemUserId) {
+        return repository.getReferenceById(systemUserId);
+    }
 }

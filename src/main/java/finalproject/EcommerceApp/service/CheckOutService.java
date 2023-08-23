@@ -3,7 +3,7 @@ package finalproject.EcommerceApp.service;
 import finalproject.EcommerceApp.dto_request.ShoppingCartRequestDTO;
 import finalproject.EcommerceApp.exception.InsufficientInventoryException;
 import finalproject.EcommerceApp.exception.ResourceNotFoundException;
-import finalproject.EcommerceApp.model.ShoppingOrderWrapper;
+import finalproject.EcommerceApp.dto_response.ShoppingOrderWrapper;
 import finalproject.EcommerceApp.model.ShoppingOrder;
 import finalproject.EcommerceApp.model.SystemUser;
 import jakarta.transaction.Transactional;
@@ -30,12 +30,12 @@ public class CheckOutService {
                                   SystemUser systemUser) throws ResourceNotFoundException, InsufficientInventoryException {
         ShoppingOrderWrapper shoppingOrderWrapper = orderProcessingService.createOrder(requestDTO, systemUser);
 
-        inventoryService.checkStock(shoppingOrderWrapper);
+//        inventoryService.checkStock(shoppingOrderWrapper);
 
 
 //        orderProcessingService.takeProductSnapShot(checkOutBasket);
-//        paymentService.settlePayment(checkOutBasket);
-//        deliveryService.deliver(checkOutBasket);
+        paymentService.settlePayment(shoppingOrderWrapper);
+        deliveryService.deliver(shoppingOrderWrapper);
 
         return shoppingOrderWrapper.getShoppingOrder();
     }

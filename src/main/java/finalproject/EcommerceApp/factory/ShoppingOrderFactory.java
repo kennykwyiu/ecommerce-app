@@ -1,15 +1,8 @@
 package finalproject.EcommerceApp.factory;
 
-import finalproject.EcommerceApp.dto_response.ProductCategoryResponseDTO;
-import finalproject.EcommerceApp.dto_response.ProductResponseDTO;
-import finalproject.EcommerceApp.dto_response.ShoppingOrderItemResponseDTO;
-import finalproject.EcommerceApp.exception.ResourceNotFoundException;
+import finalproject.EcommerceApp.dto_response.*;
 import finalproject.EcommerceApp.model.*;
-import finalproject.EcommerceApp.service.ProductImagesService;
-import finalproject.EcommerceApp.service.ProductService;
-import finalproject.EcommerceApp.service.ShoppingOrderItemService;
-import finalproject.EcommerceApp.service.ShoppingOrderService;
-import finalproject.EcommerceApp.dto_response.ShoppingOrderResponseDTO;
+import finalproject.EcommerceApp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,18 +13,23 @@ import java.util.stream.Collectors;
 public class ShoppingOrderFactory {
     @Autowired
     private ShoppingOrderItemService shoppingOrderItemService;
-
     @Autowired
     private ProductCategoryFactory productCategoryFactory;
-
     @Autowired
     private ProductImageFactory productImageFactory;
     @Autowired
     private ProductService productService;
     @Autowired
     private ProductImagesService productImagesService;
+    @Autowired
+    private SystemUserAddressFactory systemUserAddressFactory;
+    @Autowired
+    private  SystemUserAddressService systemUserAddressService;
+    @Autowired
+    private SystemUserService systemUserService;
 
-    public ShoppingOrderResponseDTO createDTOFromShoppingOrder(ShoppingOrder shoppingOrder) {
+    public ShoppingOrderResponseDTO createDTOFromShoppingOrder(ShoppingOrder shoppingOrder,
+                                                               SystemUserAddressResponseDTO systemUserAddressResponseDTO) {
         List<ShoppingOrderItem> shoppingOrderItems
                 = shoppingOrderItemService.findAllByShoppingOrder(shoppingOrder);
 
@@ -54,11 +52,40 @@ public class ShoppingOrderFactory {
                                 .build())
                                 .collect(Collectors.toList());
 
+
         return ShoppingOrderResponseDTO.builder()
                 .shoppingOrderItemResponseDTOS(shoppingOrderItemResponseDTOS)
                 .total(shoppingOrder.getTotal())
                 .createdAt(shoppingOrder.getCreatedAt())
                 .orderStatus(shoppingOrder.getStatus())
+                .systemUserAddressResponseDTO(systemUserAddressResponseDTO)
+                .build();
+
+    }
+
+    public ShoppingOrderResponseDTO createDTOFromShoppingOrder(ShoppingOrder shoppingOrder) {
+        List<ShoppingOrderItem> shoppingOrderItems
+                = shoppingOrderItemService.findAllByShoppingOrder(shoppingOrder);
+        SystemUser systemUser = shoppingOrder.getSystemUser();
+        SystemUserAddress systemUserAddress = systemUserAddressService.findBySystemUser(systemUser);
+        SystemUserAddressResponseDTO systemUserAddressResponseDTO
+                = systemUserAddressFactory.toResponseDTO(systemUserAddress);
+
+        List<ShoppingOrderItemResponseDTO> shoppingOrderItemResponseDTOS
+                = shoppingOrderItems.stream()
+                .map(shoppingOrderItem -> ShoppingOrderItemResponseDTO.builder()
+                        .productResponseDTO(createProductResponseDTOFromProductSnapshot(shoppingOrderItem.getProductSnapshot()))
+                        .quantity(shoppingOrderItem.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
+
+
+        return ShoppingOrderResponseDTO.builder()
+                .shoppingOrderItemResponseDTOS(shoppingOrderItemResponseDTOS)
+                .total(shoppingOrder.getTotal())
+                .createdAt(shoppingOrder.getCreatedAt())
+                .orderStatus(shoppingOrder.getStatus())
+                .systemUserAddressResponseDTO(systemUserAddressResponseDTO)
                 .build();
 
     }

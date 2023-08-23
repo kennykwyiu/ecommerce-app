@@ -28,7 +28,7 @@ public class UserProductController {
     //@RequestParam(defaultValue = "10") int size
 
     @GetMapping // OK
-    public List<ProductResponseDTO> getAll(@RequestParam(name = "qc", required = false) Long productCategoryId) {
+    public List<ProductResponseDTO> getAllOrByProductCategoryId(@RequestParam(name = "qc", required = false) Long productCategoryId) {
 
         if (productCategoryId == null) {
             return productService.findAll().stream()

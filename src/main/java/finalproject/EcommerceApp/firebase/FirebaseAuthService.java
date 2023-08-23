@@ -6,6 +6,7 @@ import com.google.firebase.auth.UserRecord;
 import finalproject.EcommerceApp.dto_request.SignUpRequestDTO;
 import finalproject.EcommerceApp.exception.ExternalServiceException;
 import finalproject.EcommerceApp.model.Permission;
+import finalproject.EcommerceApp.model.SystemUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class FirebaseAuthService {
 
     @Autowired
     private FirebaseAuth firebaseAuth;
+
 
     public String createUser(SignUpRequestDTO requestDTO) throws ExternalServiceException {
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
@@ -59,6 +61,7 @@ public class FirebaseAuthService {
             throw new ExternalServiceException(e.getMessage());
         }
     }
+
 
 
 }
