@@ -3,9 +3,10 @@ package finalproject.EcommerceApp.service;
 import finalproject.EcommerceApp.dto_request.ShoppingCartRequestDTO;
 import finalproject.EcommerceApp.exception.InsufficientInventoryException;
 import finalproject.EcommerceApp.exception.ResourceNotFoundException;
-import finalproject.EcommerceApp.dto_response.ShoppingOrderWrapper;
+import finalproject.EcommerceApp.dto_request.ShoppingOrderWrapper;
 import finalproject.EcommerceApp.model.ShoppingOrder;
 import finalproject.EcommerceApp.model.SystemUser;
+import finalproject.EcommerceApp.model.SystemUserAddress;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,15 +28,15 @@ public class CheckOutService {
     private DeliveryService deliveryService;
 
     public ShoppingOrder checkOut(ShoppingCartRequestDTO requestDTO,
-                                  SystemUser systemUser) throws ResourceNotFoundException, InsufficientInventoryException {
-        ShoppingOrderWrapper shoppingOrderWrapper = orderProcessingService.createOrder(requestDTO, systemUser);
+                                  SystemUserAddress systemUserAddress) throws ResourceNotFoundException, InsufficientInventoryException {
+        SystemUser systemUser = systemUserAddress.getSystemUser();
+        String activeAddress = systemUserAddress.toString();
+        ShoppingOrderWrapper shoppingOrderWrapper = orderProcessingService.createOrder(requestDTO,
+                systemUser, activeAddress);
 
 //        inventoryService.checkStock(shoppingOrderWrapper);
-
-
-//        orderProcessingService.takeProductSnapShot(checkOutBasket);
         paymentService.settlePayment(shoppingOrderWrapper);
-        deliveryService.deliver(shoppingOrderWrapper);
+        deliveryService.deliver(shoppingOrderWrapper, systemUserAddress);
 
         return shoppingOrderWrapper.getShoppingOrder();
     }

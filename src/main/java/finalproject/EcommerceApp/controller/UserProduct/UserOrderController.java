@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,23 +43,25 @@ public class UserOrderController {
     @Autowired
     private SystemUserAddressFactory systemUserAddressFactory;
 
-    @GetMapping
-    public List<ShoppingOrderResponseDTO> getHistoricalOrders(Principal principal) throws ResourceNotFoundException {
-        String externalUserId = principal.getName();
-        SystemUser systemUser = getSystemUser(externalUserId);
+    @Autowired
+    private ProductService productService;
 
-        return orderProcessingService.findAllOrderBySystemUser(systemUser).stream()
-        .map(shoppingOrderFactory::createDTOFromShoppingOrder)
-        .toList();
+    @GetMapping // OK
+    public List<ShoppingOrderResponseDTO> getHistoricalOrders(SystemUser systemUser) throws ResourceNotFoundException {
+
+        List<ShoppingOrderResponseDTO> shoppingOrderResponseDTOS = new ArrayList<>();
+        List<ShoppingOrder> shoppingOrders = orderProcessingService.findAllOrderBySystemUser(systemUser);
+        for (ShoppingOrder shoppingOrder : shoppingOrders) {
+            ShoppingOrderResponseDTO shoppingOrderResponseDTO = shoppingOrderFactory.createDTOFromShoppingOrder(shoppingOrder);
+            shoppingOrderResponseDTOS.add(shoppingOrderResponseDTO);
+        }
+        return shoppingOrderResponseDTOS;
     }
 
 
-    @PostMapping
-    public ResponseEntity<ShoppingOrderResponseDTO> checkOut(Principal principal)
+    @PostMapping // OK
+    public ResponseEntity<ShoppingOrderResponseDTO> checkOut(SystemUser systemUser)
             throws ResourceNotFoundException, InsufficientInventoryException {
-
-        String externalUserId = principal.getName();
-        SystemUser systemUser = getSystemUser(externalUserId);
 
         ShoppingCartRequestDTO shoppingCartRequestDTO = shoppingCartService.getCart(systemUser.getId());
 
@@ -67,21 +69,29 @@ public class UserOrderController {
             throw new IllegalStateException("Your shopping cart is empty");
         }
 
-        ShoppingOrder shoppingOrder = checkOutService.checkOut(shoppingCartRequestDTO, systemUser);
-
-        SystemUserAddress systemUserAddress = systemUserAddressService.findBySystemUser(systemUser);
+        SystemUserAddress systemUserAddress = systemUserAddressService.getActiveSystemUserAddress(systemUser);
 
         SystemUserAddressResponseDTO systemUserAddressResponseDTO
                 = systemUserAddressFactory.toResponseDTO(systemUserAddress);
 
+        ShoppingOrder shoppingOrder = checkOutService.checkOut(shoppingCartRequestDTO, systemUserAddress);
+
         ShoppingOrderResponseDTO shoppingOrderResponseDTO =
                 shoppingOrderFactory.createDTOFromShoppingOrder(shoppingOrder, systemUserAddressResponseDTO);
+
+        shoppingOrderResponseDTO.getShoppingOrderItemResponseDTOS().stream()
+                .map(shoppingOrderItemResponseDTO -> shoppingOrderItemResponseDTO.getProductResponseDTO().getId())
+                .forEach(id -> {
+                    try {
+                        productService.findById(id).setQuantity(0);
+                    } catch (ResourceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
         shoppingCartService.clearCart(systemUser.getId());
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingOrderResponseDTO);
-    }
 
-    private SystemUser getSystemUser(String externalUserId) throws ResourceNotFoundException {
-        return systemUserService.findByExternalUserId(externalUserId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(shoppingOrderResponseDTO);
     }
 }

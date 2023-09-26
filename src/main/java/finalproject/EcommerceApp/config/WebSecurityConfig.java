@@ -34,9 +34,7 @@ public class WebSecurityConfig {
                                 // replace @PreAuthorize("hasAuthority('ADMIN')")
                                 .anyRequest().authenticated()
         );
-
         http.oauth2ResourceServer().jwt();
-
         return http.build();
     }
 
@@ -58,6 +56,4 @@ public class WebSecurityConfig {
         );
         return converter;
     }
-
-
 }

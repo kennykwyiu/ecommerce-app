@@ -2,10 +2,8 @@ package finalproject.EcommerceApp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -26,5 +24,8 @@ public class ShoppingOrder extends AbstractAuditableEntity<ShoppingOrder, Long> 
 
     @Enumerated(EnumType.STRING)
     private ShoppingOrderStatus status;
+
+    @Column(name = "active_address")
+    private String activeAddress;
 
 }

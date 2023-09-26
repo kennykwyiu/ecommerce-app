@@ -24,14 +24,14 @@ public class UserProductController {
     @Autowired
     private ProductFactory productFactory;
 
-    //@RequestParam(defaultValue = "0") int page,
-    //@RequestParam(defaultValue = "10") int size
 
     @GetMapping // OK
-    public List<ProductResponseDTO> getAllOrByProductCategoryId(@RequestParam(name = "qc", required = false) Long productCategoryId) {
+    public List<ProductResponseDTO> getAllOrByProductCategoryId(@RequestParam(name = "qc", required = false) Long productCategoryId,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
 
         if (productCategoryId == null) {
-            return productService.findAll().stream()
+            return productService.findAll(PageRequest.of(page, size)).stream()
                     .map(productFactory::toDto)
                     .toList();
         }
@@ -41,3 +41,4 @@ public class UserProductController {
     }
 
 }
+

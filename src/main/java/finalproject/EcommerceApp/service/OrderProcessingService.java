@@ -2,7 +2,7 @@ package finalproject.EcommerceApp.service;
 
 import finalproject.EcommerceApp.dto_request.ShoppingCartItemRequestDTO;
 import finalproject.EcommerceApp.dto_request.ShoppingCartRequestDTO;
-import finalproject.EcommerceApp.dto_response.ShoppingOrderWrapper;
+import finalproject.EcommerceApp.dto_request.ShoppingOrderWrapper;
 import finalproject.EcommerceApp.exception.InsufficientInventoryException;
 import finalproject.EcommerceApp.exception.ResourceNotFoundException;
 import finalproject.EcommerceApp.model.*;
@@ -32,15 +32,21 @@ public class OrderProcessingService {
     @Autowired
     private InventoryService inventoryService;
 
+    public List<ShoppingOrder> findAllOrderBySystemUser(SystemUser systemUser) {
+        return shoppingOrderRepository.findAllBySystemUser(systemUser);
+    }
+
     public ShoppingOrderWrapper createOrder(ShoppingCartRequestDTO requestDTO,
-                                            SystemUser systemUser) throws ResourceNotFoundException,
-            InsufficientInventoryException {
+                                            SystemUser systemUser,
+                                            String activeAddress) throws ResourceNotFoundException,
+                                                                    InsufficientInventoryException {
 
         // TODO: total and SystemUser to create ShoppingOrder
         //  add systemUser and status first and setTotal later
         ShoppingOrder shoppingOrder = ShoppingOrder.builder()
                 .systemUser(systemUser)
                 .status(ShoppingOrderStatus.PENDING_PAYMENT)
+                .activeAddress(activeAddress)
                 .build();
 
 //        shoppingOrderRepository.save(shoppingOrder);
@@ -56,13 +62,32 @@ public class OrderProcessingService {
         for (ShoppingCartItemRequestDTO item : cartItemRequestDTOS) {
             Product product = productService.findById(item.getProductId());
 
-            ShoppingOrderItem shoppingOrderItem = createdOrderItem(shoppingOrder,
+            ShoppingOrderItem shoppingOrderItem;
+            List<ProductSnapshot> productSnapshots
+                    = productSnapShotService.findLatestSnapShotByProductId(product);
+
+            ProductSnapshot productSnapshot;
+            if (isProductSnapShotLatest(productSnapshots, product)) {
+                productSnapshot = productSnapshots.get(0);
+            } else {
+                productSnapshot= takeProductSnapShot(product);
+            }
+            shoppingOrderItem = getShoppingOrderItem(productSnapshot,
                     item,
-                    product);
+                    shoppingOrder);
+
+            /*
+                        if (isProductSnapShotLatest(productSnapshots, product)) {
+                ProductSnapshot productSnapshot = productSnapshots.get(0);
+                shoppingOrderItem = getShoppingOrderItem(productSnapshot, item, shoppingOrder);
+            } else {
+                ProductSnapshot newProductSnapshot = takeSanpShot(product);
+                shoppingOrderItem = getShoppingOrderItem(newProductSnapshot, item, shoppingOrder);
+            }
+             */
+
             inventoryService.checkStock(errorMessage, shoppingOrderItem);
-
             shoppingOrderItems.add(shoppingOrderItem);
-
             orderTotal = computeOrderTotal(orderTotal, item, product);
         }
 
@@ -83,44 +108,40 @@ public class OrderProcessingService {
                 .build();
     }
 
-    private static BigDecimal computeOrderTotal(BigDecimal orderTotal, ShoppingCartItemRequestDTO item,
+    private static ShoppingOrderItem getShoppingOrderItem(ProductSnapshot productSnapshot,
+                                                          ShoppingCartItemRequestDTO item,
+                                                          ShoppingOrder shoppingOrder) {
+        ShoppingOrderItem shoppingOrderItem;
+        shoppingOrderItem = ShoppingOrderItem.builder()
+                .productSnapshot(productSnapshot)
+                .quantity(item.getQuantity())
+                .shoppingOrder(shoppingOrder)
+                .build();
+        return shoppingOrderItem;
+    }
+
+    private ProductSnapshot takeProductSnapShot(Product product) {
+        ProductSnapshot newProductSnapshot = ProductSnapshot.builder()
+                .title(product.getTitle())
+                .quantity(product.getQuantity())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .thumbnail(product.getThumbnail())
+                .countryOfOrigin(product.getCountryOfOrigin())
+                .color(product.getColor())
+                .productCategory(product.getProductCategory())
+                .product(product)
+                .build();
+        productSnapShotService.save(newProductSnapshot);
+        return newProductSnapshot;
+    }
+
+    private static BigDecimal computeOrderTotal(BigDecimal orderTotal,
+                                                ShoppingCartItemRequestDTO item,
                                                 Product product) {
         return orderTotal.add(product.getPrice().multiply(new BigDecimal(item.getQuantity())));
     }
 
-    private ShoppingOrderItem createdOrderItem(ShoppingOrder shoppingOrder,
-                                               ShoppingCartItemRequestDTO item,
-                                               Product product) throws ResourceNotFoundException {
-        List<ProductSnapshot> productSnapshots
-                = productSnapShotService.findLatestSnapShotByProductId(product);
-
-        if (isProductSnapShotLatest(productSnapshots, product)) {
-            return ShoppingOrderItem.builder()
-                    .productSnapshot(productSnapshots.get(0))
-                    .quantity(item.getQuantity())
-                    .shoppingOrder(shoppingOrder)
-                    .build();
-        } else {
-            ProductSnapshot newProductSnapshot = ProductSnapshot.builder()
-                    .title(product.getTitle())
-                    .quantity(product.getQuantity())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .thumbnail(product.getThumbnail())
-                    .countryOfOrigin(product.getCountryOfOrigin())
-                    .color(product.getColor())
-                    .productCategory(product.getProductCategory())
-                    .product(product)
-                    .build();
-            productSnapShotService.save(newProductSnapshot);
-
-            return ShoppingOrderItem.builder()
-                    .productSnapshot(newProductSnapshot)
-                    .quantity(item.getQuantity())
-                    .shoppingOrder(shoppingOrder)
-                    .build();
-        }
-    }
 
     private boolean isProductSnapShotLatest(List<ProductSnapshot> productSnapshots,
                                             Product product) {
@@ -129,13 +150,5 @@ public class OrderProcessingService {
         }
         ProductSnapshot productSnapshot = productSnapshots.get(0);
         return productSnapshot.getCreatedAt().isAfter(product.getUpdatedAt());
-    }
-
-    public void takeProductSnapShot(ShoppingOrderWrapper shoppingOrder) {
-
-    }
-
-    public List<ShoppingOrder> findAllOrderBySystemUser(SystemUser systemUser) {
-        return shoppingOrderRepository.findAllBySystemUser(systemUser);
     }
 }

@@ -28,7 +28,7 @@ public class UserShoppingCartController {
     @Autowired
     private SystemUserService systemUserService;
 
-    @PostMapping
+    @PostMapping // OK
     public ResponseEntity<EmptyResponseDTO> updateCart(@RequestBody ShoppingCartRequestDTO requestDTO,
                                                        Principal principal) throws ResourceNotFoundException {
         String externalUserId = principal.getName();
@@ -38,7 +38,7 @@ public class UserShoppingCartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new EmptyResponseDTO());
     }
 
-    @GetMapping
+    @GetMapping // OK
     public ShoppingCartResponseDTO retrieveCart(Principal principal) throws ResourceNotFoundException {
         String externalUserId = principal.getName();
         SystemUser systemUser = systemUserService.findByExternalUserId(externalUserId);

@@ -13,6 +13,7 @@ import finalproject.EcommerceApp.service.ProductImagesService;
 import finalproject.EcommerceApp.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +37,11 @@ public class AdminProductController {
 
 
     @GetMapping // ok
-    public List<ProductResponseDTO> getAll(@RequestParam(name = "qc", required = false) Long productCategoryId) {
+    public List<ProductResponseDTO> getAll(@RequestParam(name = "qc", required = false) Long productCategoryId,
+                                           @RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
         if (productCategoryId == null) {
-            return productService.findAll().stream()
+            return productService.findAll(PageRequest.of(page, size)).stream()
                     .map(productFactory::toDto)
                     .toList();
         }

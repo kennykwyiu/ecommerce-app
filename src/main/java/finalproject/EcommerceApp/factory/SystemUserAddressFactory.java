@@ -4,21 +4,14 @@ import finalproject.EcommerceApp.dto_request.SystemUserAddressRequestDTO;
 import finalproject.EcommerceApp.dto_response.SystemUserAddressResponseDTO;
 import finalproject.EcommerceApp.model.SystemUser;
 import finalproject.EcommerceApp.model.SystemUserAddress;
-import finalproject.EcommerceApp.repository.SystemUserAddressRepository;
+import finalproject.EcommerceApp.service.SystemUserAddressService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SystemUserAddressFactory {
-
-    private final SystemUserAddressRepository systemUserAddressRepository;
-
-    public SystemUserAddressFactory(SystemUserAddressRepository systemUserAddressRepository) {
-        this.systemUserAddressRepository = systemUserAddressRepository;
-    }
-
     public SystemUserAddressResponseDTO toResponseDTO(SystemUserAddressRequestDTO requestDTO,
-                                                      SystemUser systemUser) {
-        SystemUserAddress systemUserAddress = systemUserAddressRepository.findBySystemUser(systemUser);
+                                                      SystemUserAddress systemUserAddress) {
         return SystemUserAddressResponseDTO.builder()
                 .id(systemUserAddress.getId())
                 .room(requestDTO.getRoom())
@@ -30,7 +23,7 @@ public class SystemUserAddressFactory {
                 .county(requestDTO.getCounty())
                 .phoneNumber(requestDTO.getPhoneNumber())
                 .receiver(requestDTO.getReceiver())
-                .systemUserId(systemUser.getId())
+                .systemUserId(systemUserAddress.getSystemUser().getId())
                 .build();
     }
 
@@ -49,6 +42,7 @@ public class SystemUserAddressFactory {
                 .phoneNumber(systemUserAddress.getPhoneNumber())
                 .receiver(systemUserAddress.getReceiver())
                 .systemUserId(systemUser.getId())
+                .activeAddress(systemUserAddress.getActiveAddress())
                 .build();
     }
 

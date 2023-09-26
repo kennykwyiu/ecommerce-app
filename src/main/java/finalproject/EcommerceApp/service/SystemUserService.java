@@ -24,7 +24,7 @@ public class SystemUserService extends AbstractBaseService<SystemUser, Long> {
     @Autowired
     private FirebaseAuthService firebaseAuthService;
 
-    private SystemUserRepository repository;
+    private final SystemUserRepository repository;
 
     public SystemUserService(SystemUserRepository repository) {
         super(repository);

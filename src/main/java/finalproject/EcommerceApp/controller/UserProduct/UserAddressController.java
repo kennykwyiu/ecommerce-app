@@ -3,6 +3,7 @@ package finalproject.EcommerceApp.controller.UserProduct;
 import finalproject.EcommerceApp.dto_request.SystemUserAddressRequestDTO;
 import finalproject.EcommerceApp.dto_response.EmptyResponseDTO;
 import finalproject.EcommerceApp.exception.ResourceNotFoundException;
+import finalproject.EcommerceApp.exception.UnauthorizedOperationException;
 import finalproject.EcommerceApp.factory.SystemUserAddressFactory;
 import finalproject.EcommerceApp.dto_response.SystemUserAddressResponseDTO;
 import finalproject.EcommerceApp.model.SystemUser;
@@ -36,22 +37,15 @@ public class UserAddressController {
 
     @PostMapping // OK
     public ResponseEntity<SystemUserAddressResponseDTO> createAddress(@Valid @RequestBody SystemUserAddressRequestDTO requestDTO,
-                                                                      Principal principal) throws ResourceNotFoundException {
-        SystemUser systemUser
-                = systemUserService.findByExternalUserId(principal.getName());
+                                                                      SystemUser systemUser) {
         SystemUserAddressResponseDTO systemUserAddressResponseDTO
-                = systemUserAddressFactory.toResponseDTO(requestDTO, systemUser);
-        SystemUserAddress systemUserAddress
-                = systemUserAddressFactory.toEntity(requestDTO, systemUser);
-        systemUserAddressRepository.save(systemUserAddress);
-
+                = systemUserAddressService.createAddress(requestDTO, systemUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(systemUserAddressResponseDTO);
     }
 
     @GetMapping // OK
-    public ResponseEntity<List<SystemUserAddressResponseDTO>> getAllAddress(Principal principal) throws ResourceNotFoundException {
-        List<SystemUserAddress> systemUserAddressList = systemUserAddressService.findAll();
-        SystemUser systemUser = systemUserService.findByExternalUserId(principal.getName());
+    public ResponseEntity<List<SystemUserAddressResponseDTO>> getAllAddressBySystemUser(SystemUser systemUser) throws ResourceNotFoundException {
+        List<SystemUserAddress> systemUserAddressList = systemUserAddressService.findBySystemUser(systemUser);
 
         List<SystemUserAddressResponseDTO> systemUserAddressResponseDTOList = systemUserAddressList.stream()
                 .map(systemUserAddressFactory::toResponseDTO)
@@ -62,9 +56,9 @@ public class UserAddressController {
     @PutMapping("/{addressId}") // OK
     public ResponseEntity<SystemUserAddressResponseDTO> updateAddress(@PathVariable(name = "addressId") Long addressId,
                                                                       @Valid @RequestBody SystemUserAddressRequestDTO systemUserAddressRequestDTO,
-                                                                      Principal principal) throws ResourceNotFoundException {
+                                                                      SystemUser systemUser) throws ResourceNotFoundException, UnauthorizedOperationException {
+
         SystemUserAddress previousAddress = systemUserAddressService.findById(addressId);
-        SystemUser systemUser = systemUserService.findByExternalUserId(principal.getName());
         SystemUserAddressResponseDTO systemUserAddressResponseDTO
                 = systemUserAddressService.updateAddress(systemUserAddressRequestDTO,
                 previousAddress,
@@ -73,8 +67,16 @@ public class UserAddressController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(systemUserAddressResponseDTO);
     }
 
+    @PatchMapping("/{addressId}")
+    public ResponseEntity<SystemUserAddressResponseDTO> setActiveAddress(@PathVariable(name = "addressId") Long addressId,
+                                                                         SystemUser systemUser) throws ResourceNotFoundException, UnauthorizedOperationException {
+        SystemUserAddress systemUserAddress = systemUserAddressService.setActiveAddress(addressId, systemUser);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(systemUserAddressFactory.toResponseDTO(systemUserAddress));
+    }
+
     @DeleteMapping("/{addressId}") // OK
-    public ResponseEntity<EmptyResponseDTO> deleteAddress(@PathVariable(name = "addressId") Long addressId) throws ResourceNotFoundException {
+    public ResponseEntity<EmptyResponseDTO> deleteAddress(@PathVariable(name = "addressId") Long addressId,
+                                                          SystemUser systemUser) throws ResourceNotFoundException {
         SystemUserAddress systemUserAddress = systemUserAddressService.findById(addressId);
         systemUserAddressService.delete(systemUserAddress);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

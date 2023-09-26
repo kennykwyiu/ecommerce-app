@@ -40,14 +40,15 @@ public class WuXingController {
         SystemUser systemUser = systemUserService.findByExternalUserId(principal.getName());
         WuXing wuXing = wuXingService.findBySystemUser(systemUser);
         WuXingResponseDTO wuXingResponseDTO = wuXingFactory.toResponseDTO(wuXing);
-        return ResponseEntity.status(HttpStatus.CREATED).body(wuXingResponseDTO)
+        return ResponseEntity.status(HttpStatus.CREATED).body(wuXingResponseDTO);
     }
 
     @PutMapping
     public ResponseEntity<WuXingResponseDTO> updateWuXing(@Valid @RequestBody WuXingRequestDTO requestDTO,
                                                           Principal principal) throws ResourceNotFoundException {
         SystemUser systemUser = systemUserService.findByExternalUserId(principal.getName());
-        WuXingResponseDTO wuXingResponseDTO = wuXingService.updateWuXing(requestDTO, systemUser);
+        WuXing wuXing = wuXingService.updateWuXing(requestDTO, systemUser);
+        WuXingResponseDTO wuXingResponseDTO = wuXingFactory.toResponseDTO(wuXing);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(wuXingResponseDTO);
     }
 

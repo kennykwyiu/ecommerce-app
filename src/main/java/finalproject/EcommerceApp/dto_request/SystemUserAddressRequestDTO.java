@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -30,5 +31,7 @@ public class SystemUserAddressRequestDTO {
     private String receiver;
     @NotBlank
     private String phoneNumber;
+    @NotNull
+    private Long systemUserId;
 
 }

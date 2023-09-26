@@ -24,14 +24,11 @@ public class ProductService extends AbstractBaseService<Product, Long> {
     private ProductCategoryService productCategoryService;
     @Autowired
     private ProductImagesRepository productImagesRepository;
-    private ProductRepository repository;
-
     @Autowired
     private ProductImageFactory productImageFactory;
 
 
-
-
+    private ProductRepository repository;
     public ProductService(ProductRepository repository) {
         super(repository);
         this.repository = repository;

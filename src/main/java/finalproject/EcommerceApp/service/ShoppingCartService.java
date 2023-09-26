@@ -1,13 +1,10 @@
 package finalproject.EcommerceApp.service;
 
-import finalproject.EcommerceApp.dto_request.ShoppingCartItemRequestDTO;
 import finalproject.EcommerceApp.dto_request.ShoppingCartRequestDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Transactional

@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class WuXingService extends AbstractBaseService<WuXing, Long> {
-    @Autowired
-    private WuXingFactory wuXingFactory;
 
     private final WuXingRepository repository;
 
@@ -29,7 +27,7 @@ public class WuXingService extends AbstractBaseService<WuXing, Long> {
         return repository.findBySystemUser(systemUser);
     }
 
-    public WuXingResponseDTO updateWuXing(WuXingRequestDTO requestDTO, SystemUser systemUser) {
+    public WuXing updateWuXing(WuXingRequestDTO requestDTO, SystemUser systemUser) {
         WuXing wuXing = findBySystemUser(systemUser);
         wuXing.setBirthTime(requestDTO.getBirthTime());
         wuXing.setBirthDay(requestDTO.getBirthDay());
@@ -37,6 +35,6 @@ public class WuXingService extends AbstractBaseService<WuXing, Long> {
         wuXing.setBirthMonth(requestDTO.getBirthMonth());
         wuXing.setBirthYear(requestDTO.getBirthYear());
         repository.save(wuXing);
-        return wuXingFactory.toResponseDTO(wuXing);
+        return wuXing;
     }
 }

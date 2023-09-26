@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface ProductImagesRepository extends AbstractBaseRepository<ProductImages, Long> {
 
-  @Query("select url from ProductImages pi where pi.product = :product")
+  @Query("select url from ProductImages pi " +
+          "where pi.product = :product")
   List<String> findAllByProduct(@Param("product") Product product);
 }

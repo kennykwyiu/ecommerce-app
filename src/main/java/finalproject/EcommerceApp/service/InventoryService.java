@@ -3,7 +3,7 @@ package finalproject.EcommerceApp.service;
 import finalproject.EcommerceApp.exception.InsufficientInventoryException;
 import finalproject.EcommerceApp.model.ShoppingOrder;
 import finalproject.EcommerceApp.model.ShoppingOrderItem;
-import finalproject.EcommerceApp.dto_response.ShoppingOrderWrapper;
+import finalproject.EcommerceApp.dto_request.ShoppingOrderWrapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

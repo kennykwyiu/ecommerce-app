@@ -1,6 +1,7 @@
 package finalproject.EcommerceApp.factory;
 
 import finalproject.EcommerceApp.dto_response.*;
+import finalproject.EcommerceApp.exception.ResourceNotFoundException;
 import finalproject.EcommerceApp.model.*;
 import finalproject.EcommerceApp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,18 +59,19 @@ public class ShoppingOrderFactory {
                 .total(shoppingOrder.getTotal())
                 .createdAt(shoppingOrder.getCreatedAt())
                 .orderStatus(shoppingOrder.getStatus())
-                .systemUserAddressResponseDTO(systemUserAddressResponseDTO)
+//                .systemUserAddressResponseDTO(systemUserAddressResponseDTO)
+                .activeAddress(shoppingOrder.getActiveAddress())
                 .build();
 
     }
 
-    public ShoppingOrderResponseDTO createDTOFromShoppingOrder(ShoppingOrder shoppingOrder) {
+    public ShoppingOrderResponseDTO createDTOFromShoppingOrder(ShoppingOrder shoppingOrder) throws ResourceNotFoundException {
         List<ShoppingOrderItem> shoppingOrderItems
                 = shoppingOrderItemService.findAllByShoppingOrder(shoppingOrder);
-        SystemUser systemUser = shoppingOrder.getSystemUser();
-        SystemUserAddress systemUserAddress = systemUserAddressService.findBySystemUser(systemUser);
-        SystemUserAddressResponseDTO systemUserAddressResponseDTO
-                = systemUserAddressFactory.toResponseDTO(systemUserAddress);
+//        SystemUser systemUser = shoppingOrder.getSystemUser();
+//        SystemUserAddress systemUserAddress = systemUserAddressService.getActiveSystemUserAddress(systemUser);
+//        SystemUserAddressResponseDTO systemUserAddressResponseDTO
+//                = systemUserAddressFactory.toResponseDTO(systemUserAddress);
 
         List<ShoppingOrderItemResponseDTO> shoppingOrderItemResponseDTOS
                 = shoppingOrderItems.stream()
@@ -85,7 +87,8 @@ public class ShoppingOrderFactory {
                 .total(shoppingOrder.getTotal())
                 .createdAt(shoppingOrder.getCreatedAt())
                 .orderStatus(shoppingOrder.getStatus())
-                .systemUserAddressResponseDTO(systemUserAddressResponseDTO)
+//                .systemUserAddressResponseDTO(systemUserAddressResponseDTO)
+                .activeAddress(shoppingOrder.getActiveAddress())
                 .build();
 
     }

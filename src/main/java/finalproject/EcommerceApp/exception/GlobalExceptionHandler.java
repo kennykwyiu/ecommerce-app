@@ -4,6 +4,7 @@ import finalproject.EcommerceApp.dto_response.ApiResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -32,6 +33,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponseDTO<Void>> handleInsufficientInventoryException(InsufficientInventoryException ex) {
         return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(ApiResponseDTO.fail(ex.getMessage()));
     }
-
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponseDTO<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseDTO.fail(ex.getMessage()));
+    }
 
 }

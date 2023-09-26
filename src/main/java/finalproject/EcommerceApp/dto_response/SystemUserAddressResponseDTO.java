@@ -17,6 +17,7 @@ public class SystemUserAddressResponseDTO {
     private String county;
     private String phoneNumber;
     private String receiver;
+    private Byte activeAddress;
     private Long systemUserId;
 
 }

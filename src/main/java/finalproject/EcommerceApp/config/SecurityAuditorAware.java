@@ -1,12 +1,9 @@
 package finalproject.EcommerceApp.config;
 
-import finalproject.EcommerceApp.exception.ResourceNotFoundException;
 import finalproject.EcommerceApp.model.SystemUser;
 import finalproject.EcommerceApp.repository.SystemUserRepository;
-import finalproject.EcommerceApp.service.SystemUserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

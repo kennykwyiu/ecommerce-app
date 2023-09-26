@@ -6,7 +6,6 @@ import com.google.firebase.auth.UserRecord;
 import finalproject.EcommerceApp.dto_request.SignUpRequestDTO;
 import finalproject.EcommerceApp.exception.ExternalServiceException;
 import finalproject.EcommerceApp.model.Permission;
-import finalproject.EcommerceApp.model.SystemUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +16,12 @@ import java.util.Map;
 @Slf4j
 @Service
 public class FirebaseAuthService {
-
     @Autowired
     private FirebaseAuth firebaseAuth;
-
 
     public String createUser(SignUpRequestDTO requestDTO) throws ExternalServiceException {
         UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
         UserRecord userRecord;
-
 
         try {
             createRequest.setDisplayName(requestDTO.getFullName())
@@ -44,9 +40,7 @@ public class FirebaseAuthService {
         log.info("Created user [{}] for [{}]",
                 uid,
                 userRecord.getEmail());
-
         return uid;
-
     }
 
     public void setUserClaims(String uid, List<Permission> requestedPermissions) throws ExternalServiceException {
@@ -61,7 +55,7 @@ public class FirebaseAuthService {
             throw new ExternalServiceException(e.getMessage());
         }
     }
-
-
-
+    public void deleteUser(String uid) throws FirebaseAuthException {
+        firebaseAuth.deleteUser(uid);
+    }
 }

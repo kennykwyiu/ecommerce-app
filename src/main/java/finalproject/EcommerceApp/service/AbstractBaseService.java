@@ -4,6 +4,7 @@ import finalproject.EcommerceApp.exception.ResourceNotFoundException;
 import finalproject.EcommerceApp.model.AbstractAuditableEntity;
 import finalproject.EcommerceApp.repository.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -27,8 +28,8 @@ public abstract class AbstractBaseService<T extends AbstractAuditableEntity<T, I
         return repository.existsById(id);
     }
 
-    public List<T> findAll() {
-        return repository.findAll();
+    public List<T> findAll(Pageable pageable) {
+        return repository.findAll(pageable).toList();
     }
 
 //    public T findById(ID id) throws ResourceNotFoundException {

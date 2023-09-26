@@ -1,7 +1,7 @@
 package finalproject.EcommerceApp.service;
 
 import finalproject.EcommerceApp.dto_request.PaymentRequestDTO;
-import finalproject.EcommerceApp.dto_response.ShoppingOrderWrapper;
+import finalproject.EcommerceApp.dto_request.ShoppingOrderWrapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

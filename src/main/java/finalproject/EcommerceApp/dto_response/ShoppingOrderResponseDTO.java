@@ -19,6 +19,7 @@ public class ShoppingOrderResponseDTO {
     private BigDecimal total;
     private LocalDateTime createdAt;
     private ShoppingOrderStatus orderStatus;
-    private SystemUserAddressResponseDTO systemUserAddressResponseDTO;
+//    private SystemUserAddressResponseDTO systemUserAddressResponseDTO;
+    private String activeAddress;
 
 }
